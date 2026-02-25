@@ -46,7 +46,8 @@
 * [ ] Upload images
 * [ ] Configure opening hours
 
-###  Table Management
+###  Table Managemgit add .
+ent
 
 * [ ] Add tables (capacity, labels)
 * [ ] Edit/delete tables
@@ -54,8 +55,8 @@
 
 ###  Reservation Management
 
-* [ ] View incoming reservations
-* [ ] Approve/decline reservations
+* [✅] View incoming reservations
+* [✅] Approve/decline reservations
 * [ ] Reservation status tracking
 
 **Deliverable:**
