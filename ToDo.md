@@ -19,7 +19,7 @@
 * [✅] Design ER diagram
 * [✅] Create core tables (Users, Restaurants, Tables, Reservations)
 * [✅] Setup migrations
-* [ ] Seed development data
+* [✅] Seed development data
 
 ###  Authentication
 
