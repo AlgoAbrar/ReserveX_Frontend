@@ -26,7 +26,7 @@
 * [✅] User registration
 * [✅] Login (JWT)
 * [✅] Role-based access control
-* [ ] Password reset flow
+* [✅] Password reset flow
 * [ ] Email verification
 
 **Deliverable:**
