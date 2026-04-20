@@ -27,7 +27,7 @@
 * [✅] Login (JWT)
 * [✅] Role-based access control
 * [✅] Password reset flow
-* [ ] Email verification
+* [✅] Email verification
 
 **Deliverable:**
 ✅ Users can register and log in
@@ -41,22 +41,22 @@
 
 ###  Restaurant CRUD
 
-* [ ] Create restaurant
-* [ ] Edit restaurant details
-* [ ] Upload images
-* [ ] Configure opening hours
+* [✅] Create restaurant
+* [✅] Edit restaurant details
+* [✅] Upload images
+* [✅] Configure opening hours
 
 ###  Table Management
 
-* [ ] Add tables (capacity, labels)
-* [ ] Edit/delete tables
-* [ ] Availability slot management
+* [✅] Add tables (capacity, labels)
+* [✅] Edit/delete tables
+* [✅] Availability slot management
 
 ###  Reservation Management
 
-* [ ] View incoming reservations
-* [ ] Approve/decline reservations
-* [ ] Reservation status tracking
+* [✅] View incoming reservations
+* [✅] Approve/decline reservations
+* [✅] Reservation status tracking
 
 **Deliverable:**
 ✅ Owner dashboard functional
@@ -84,7 +84,7 @@
 
 ###  Notifications
 
-* [ ] Email confirmation
+* [✅] Email confirmation
 * [ ] 24h reminder
 * [ ] Status change notification
 
@@ -107,14 +107,14 @@
 
 ### 📊 Admin Dashboard
 
-* [ ] Manage users
-* [ ] Manage restaurants
-* [ ] View analytics:
+* [✅] Manage users
+* [✅] Manage restaurants
+* [✅] View analytics:
 
   * [✅] Total reservations
-  * [ ] Active users
-  * [ ] Basic revenue tracking
-* [ ] System logs viewer
+  * [✅] Active users
+  * [✅] Basic revenue tracking
+* [✅] System logs viewer
 
 **Deliverable:**
 ✅ Admin dashboard operational
@@ -128,15 +128,15 @@
 
 ###  Payments (Optional)
 
-* [ ] Integrate payment gateway
-* [ ] Deposit handling
-* [ ] Refund processing
+* [✅] Integrate payment gateway
+* [✅] Deposit handling
+* [✅] Refund processing
 * [ ] Invoice generation
 
 ###  Testing
 
-* [ ] Unit tests
-* [ ] Integration tests
+* [✅] Unit tests
+* [✅] Integration tests
 * [ ] End-to-end tests
 * [ ] Load testing
 * [ ] Security testing
