@@ -1,118 +1,153 @@
-import java.util.*;
+import React, { useState } from 'react';
 
-public class ReserveXRefundSystem {
-
-    // ===================== Booking Class =====================
-    static class Booking {
-        private int id;
-        private long bookingTime;
-        private String status;
-
-        public Booking(int id, long bookingTime, String status) {
-            this.id = id;
-            this.bookingTime = bookingTime;
-            this.status = status;
-        }
-
-        public int getId() { return id; }
-        public long getBookingTime() { return bookingTime; }
-        public String getStatus() { return status; }
-
-        public void setStatus(String status) {
-            this.status = status;
-        }
-    }
-
-    // ===================== Payment Class =====================
-    static class Payment {
-        private int bookingId;
-        private double amount;
-        private String refundStatus;
-
-        public Payment(int bookingId, double amount, String refundStatus) {
-            this.bookingId = bookingId;
-            this.amount = amount;
-            this.refundStatus = refundStatus;
-        }
-
-        public int getBookingId() { return bookingId; }
-        public double getAmount() { return amount; }
-        public String getRefundStatus() { return refundStatus; }
-
-        public void setRefundStatus(String refundStatus) {
-            this.refundStatus = refundStatus;
-        }
-    }
-
-    // ===================== Refund Service =====================
-    static class RefundService {
-
-        public double processRefund(Booking booking, Payment payment) {
-
-            // Check if already refunded
-            if (payment.getRefundStatus().equals("REFUNDED")) {
-                System.out.println("Already refunded!");
-                return 0;
-            }
-
-            long currentTime = System.currentTimeMillis();
-            long bookingTime = booking.getBookingTime();
-
-            // Convert milliseconds to hours
-            double hoursDiff = (bookingTime - currentTime) / (1000.0 * 60 * 60);
-
-            double refundAmount;
-
-            // Refund rules
-            if (hoursDiff >= 2) {
-                refundAmount = payment.getAmount(); // Full refund
-            } else if (hoursDiff > 0) {
-                refundAmount = payment.getAmount() * 0.5; // 50% refund
-            } else {
-                refundAmount = 0; // No refund
-            }
-
-            // Update status
-            payment.setRefundStatus("REFUNDED");
-            booking.setStatus("CANCELLED");
-
-            return refundAmount;
-        }
-    }
-
-    // ===================== Main Method =====================
-    public static void main(String[] args) {
-
-        Scanner sc = new Scanner(System.in);
-
-        System.out.println("===== ReserveX Refund System =====");
-
-        // Input booking time (hours from now)
-        System.out.print("Enter hours from now for booking (e.g. 3): ");
-        int hours = sc.nextInt();
-
-        // Input amount
-        System.out.print("Enter payment amount: ");
-        double amount = sc.nextDouble();
-
-        // Convert to future time
-        long bookingTime = System.currentTimeMillis() + (hours * 60 * 60 * 1000);
-
-        // Create objects
-        Booking booking = new Booking(1, bookingTime, "CONFIRMED");
-        Payment payment = new Payment(1, amount, "NOT_REFUNDED");
-
-        RefundService service = new RefundService();
-
-        // Process refund
-        double refund = service.processRefund(booking, payment);
-
-        // Output results
-        System.out.println("\n===== RESULT =====");
-        System.out.println("Refund Amount: " + refund + " BDT");
-        System.out.println("Booking Status: " + booking.getStatus());
-        System.out.println("Refund Status: " + payment.getRefundStatus());
-
-        sc.close();
-    }
+// Types
+interface RefundRequest {
+  bookingId: string;
+  amount: number;
+  reason: string;
+  bookingTime: string; // new
 }
+
+interface ValidationErrors {
+  bookingId?: string;
+  amount?: string;
+  reason?: string;
+  bookingTime?: string;
+}
+
+type RefundStatus = 'processing' | 'completed' | 'failed';
+
+const RefundProcessor: React.FC = () => {
+  const [refundRequest, setRefundRequest] = useState<RefundRequest>({
+    bookingId: '',
+    amount: 0,
+    reason: '',
+    bookingTime: ''
+  });
+
+  const [errors, setErrors] = useState<ValidationErrors>({});
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [refundStatus, setRefundStatus] = useState<RefundStatus | null>(null);
+  const [result, setResult] = useState('');
+
+  // ✅ Validation
+  const validateForm = (): boolean => {
+    const newErrors: ValidationErrors = {};
+
+    if (!refundRequest.bookingId.trim()) {
+      newErrors.bookingId = 'Booking ID is required';
+    }
+
+    if (refundRequest.amount <= 0) {
+      newErrors.amount = 'Amount must be greater than 0';
+    }
+
+    if (!refundRequest.reason.trim()) {
+      newErrors.reason = 'Select a reason';
+    }
+
+    if (!refundRequest.bookingTime) {
+      newErrors.bookingTime = 'Booking time is required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // ✅ Handle Input
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+
+    setRefundRequest(prev => ({
+      ...prev,
+      [name]: name === 'amount' ? Number(value) : value
+    }));
+  };
+
+  // ✅ Refund Logic (MAIN PART)
+  const calculateRefund = () => {
+    const bookingTime = new Date(refundRequest.bookingTime).getTime();
+    const currentTime = Date.now();
+
+    const hoursDiff = (bookingTime - currentTime) / (1000 * 60 * 60);
+
+    if (hoursDiff >= 2) return refundRequest.amount;
+    if (hoursDiff > 0) return refundRequest.amount * 0.5;
+    return 0;
+  };
+
+  // ✅ Process Refund
+  const processRefund = async () => {
+    if (!validateForm()) return;
+
+    setIsProcessing(true);
+    setRefundStatus('processing');
+
+    await new Promise(res => setTimeout(res, 1500));
+
+    const refundAmount = calculateRefund();
+
+    setIsProcessing(false);
+    setRefundStatus('completed');
+
+    setResult(
+      `Refund: ${refundAmount} BDT | Status: ${
+        refundAmount === 0 ? 'No Refund' :
+        refundAmount === refundRequest.amount ? 'Full Refund' : 'Partial Refund'
+      }`
+    );
+  };
+
+  return (
+    <div style={{ maxWidth: 500, margin: 'auto', padding: 20 }}>
+      <h2>ReserveX Refund System</h2>
+
+      {/* Booking ID */}
+      <input
+        type="text"
+        name="bookingId"
+        placeholder="Booking ID"
+        value={refundRequest.bookingId}
+        onChange={handleChange}
+      />
+      <p>{errors.bookingId}</p>
+
+      {/* Amount */}
+      <input
+        type="number"
+        name="amount"
+        placeholder="Amount"
+        value={refundRequest.amount}
+        onChange={handleChange}
+      />
+      <p>{errors.amount}</p>
+
+      {/* Booking Time */}
+      <input
+        type="datetime-local"
+        name="bookingTime"
+        value={refundRequest.bookingTime}
+        onChange={handleChange}
+      />
+      <p>{errors.bookingTime}</p>
+
+      {/* Reason */}
+      <select name="reason" value={refundRequest.reason} onChange={handleChange}>
+        <option value="">Select Reason</option>
+        <option value="cancel">Customer Cancelled</option>
+        <option value="restaurant">Restaurant Issue</option>
+      </select>
+      <p>{errors.reason}</p>
+
+      <button onClick={processRefund} disabled={isProcessing}>
+        {isProcessing ? 'Processing...' : 'Process Refund'}
+      </button>
+
+      {refundStatus === 'completed' && (
+        <p style={{ marginTop: 20 }}>{result}</p>
+      )}
+    </div>
+  );
+};
+
+export default RefundProcessor;
