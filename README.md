@@ -4,7 +4,8 @@ A comprehensive restaurant reservation system for Rajshahi, Bangladesh. Built as
 
 ![ReserveX](https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&q=80)
 
-Live Link: [Reservex.com]([https://vercel.com](https://reservex-virid.vercel.app/))
+## 🌐 Live Demo
+[Reservex](https://reservex-virid.vercel.app/)
 
 ##  Quick Start
 
